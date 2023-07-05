@@ -73,9 +73,7 @@ services:
     restart: always
     volumes:
       - "/mnt/docker/nextcloud/nextcloud:/var/www/html"
-      - "/mnt/docker/nextcloud/apps:/var/www/html
-
-/custom_apps"
+      - "/mnt/docker/nextcloud/apps:/var/www/html"
       - "/mnt/docker/nextcloud/config:/var/www/html/config"
       - "/mnt/docker/nextcloud/data:/var/www/html/data"
       - "/mnt/docker/nextcloud/theme:/var/www/html/themes/<YOUR_CUSTOM_THEME>"

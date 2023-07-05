@@ -1,0 +1,33 @@
+version: "2"
+services:
+  app:
+    depends_on:
+      - db
+    environment:
+      - MYSQL_PASSWORD=SENHA
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=db
+    image: nextcloud
+    links:
+      - db
+    ports:
+      - "8080:80"
+    restart: always
+    volumes:
+      - "/mnt/docker/nextcloud/nextcloud:/var/www/html"
+      - "/mnt/docker/nextcloud/apps:/var/www/html"
+      - "/mnt/docker/nextcloud/config:/var/www/html/config"
+      - "/mnt/docker/nextcloud/data:/var/www/html/data"
+      - "/mnt/docker/nextcloud/theme:/var/www/html/themes/<YOUR_CUSTOM_THEME>"
+  db:
+    command: "--transaction-isolation=READ-COMMITTED --binlog-format=ROW"
+    environment:
+      - MYSQL_ROOT_PASSWORD=SENHA
+      - MYSQL_PASSWORD=SENHA
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    image: "mariadb:10.6"
+    restart: always
+    volumes:
+      - "/mnt/docker/nextcloud/db:/var/lib/mysql"
