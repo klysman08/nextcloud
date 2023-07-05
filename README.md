@@ -1,8 +1,10 @@
-# nextcloud
-Nextcloud é uma suíte de software cliente-servidor para criar e usar serviços de hospedagem de arquivos. Ele fornece funcionalidade semelhante ao Dropbox, Office 365 ou Google Drive quando usado com suítes de escritório integradas.
+# Nextcloud
 
+O Nextcloud é uma suíte de software cliente-servidor para criar e utilizar serviços de hospedagem de arquivos. Ele oferece funcionalidades semelhantes às do Dropbox, Office 365 ou Google Drive, quando utilizado com suítes de escritório integradas.
 
-# Instalação do docker e plugins
+## Instalação do Docker e plugins
+
+Execute os seguintes comandos para instalar o Docker e os plugins necessários:
 
 ```bash
 sudo apt-get update && sudo apt-get upgrade -y
@@ -13,12 +15,15 @@ sudo apt update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 sudo usermod -aG docker $USER
 sudo systemctl restart docker
-#Após executar esses comandos, faça logout e faça login novamente na sua sessão para que as alterações tenham efeito. Depois disso, você poderá executar comandos Docker sem a necessidade de sudo.
 ```
 
-# Alocando memoria SWAP
+Após executar esses comandos, faça logout e faça login novamente na sua sessão para que as alterações tenham efeito. Depois disso, você poderá executar comandos Docker sem a necessidade de sudo.
 
-Esse processo melhora o desempenho da maquina virtual para o nextcloud
+## Alocando memória SWAP
+
+Esse processo melhora o desempenho da máquina virtual para o Nextcloud.
+
+Execute os seguintes comandos:
 
 ```bash
 sudo swapon --show
@@ -29,7 +34,9 @@ sudo swapon /swapfile
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 ```
 
-# Portainer:
+## Portainer
+
+O Portainer é uma interface de gerenciamento do Docker que permite administrar facilmente os seus containers. Execute o seguinte comando para executar o Portainer:
 
 ```bash
 sudo docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer:/data portainer/portainer-ce:latest
@@ -37,25 +44,17 @@ ou
 sudo docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer:/data portainer/portainer-ce:latest -H unix:///var/run/docker.sock
 ```
 
-[http://SEUIP:9000/](http://SEUIP:9000/)
+Acesse o Portainer em [http://SEUIP:9000/](http://SEUIP:9000/) e crie um usuário.
 
-```bash
-crie um user
-```
+## Portas
 
-# Portas:
+Permita que todas as portas possam acessar a porta 9000 da máquina. Por exemplo, na Oracle Cloud, você pode configurar isso através da interface do Oracle Cloud Console.
 
-Permita que todas as portas possam acessar a porta 9000 da máquina
+## Stack Nextcloud
 
-Exemplo na oracle cloud:
+Utilize o Docker Compose abaixo para configurar o Nextcloud:
 
-![Untitled](Next%20Cloud%2088222f79c47345c4a2676661991e82f4/Untitled.png)
-
-# Stack Nextcloud
-
-Docker compose:
-
-```bash
+```yaml
 version: "2"
 services:
   app:
@@ -74,7 +73,9 @@ services:
     restart: always
     volumes:
       - "/mnt/docker/nextcloud/nextcloud:/var/www/html"
-      - "/mnt/docker/nextcloud/apps:/var/www/html/custom_apps"
+      - "/mnt/docker/nextcloud/apps:/var/www/html
+
+/custom_apps"
       - "/mnt/docker/nextcloud/config:/var/www/html/config"
       - "/mnt/docker/nextcloud/data:/var/www/html/data"
       - "/mnt/docker/nextcloud/theme:/var/www/html/themes/<YOUR_CUSTOM_THEME>"
@@ -91,27 +92,28 @@ services:
       - "/mnt/docker/nextcloud/db:/var/lib/mysql"
 ```
 
-# CloudFlare
+## CloudFlare
 
-1. Crie o acesso ao Zero Trust
-2. Crie um novo Tunnel
-3. Cria a imagem em docker:
-    
-    > docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token CHAVE...
-    > 
+Aqui estão os passos para configurar o CloudFlare:
 
-> Dê acesso do **nextcloud-app-1** a bridge que foi criada
-> 
-> 
-> Join network
-> 
+1. Crie o acesso ao Zero Trust.
+2. Crie um novo túnel.
+3. Crie a imagem em Docker:
 
-****Route Traffic for nextcloud****
+   ```
+   docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token CHAVE...
+   ```
 
-1. subdomain: nextcloud
-2. domain: krmdigital.com
-3. type: http
-4. url: IP-DA-BRIDGE:80
+4. Dê acesso do **nextcloud-app-1** à bridge que foi criada.
+5. Junte-se à rede.
 
-[Nextcloud](http://nextcloud.seudominio.com/)
+## Roteamento de tráfego para o Nextcloud
 
+Configure o roteamento de tráfego para o Nextcloud da seguinte forma:
+
+1. Subdomínio: nextcloud.
+2. Domínio: krmdigital.com.
+3. Tipo: HTTP.
+4. URL: IP-DA-BRIDGE:80.
+
+Acesse o Nextcloud em http://nextcloud.seudominio.com/
